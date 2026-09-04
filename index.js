@@ -1,7 +1,7 @@
 /**
  * dsh-plugin-npm-guard
- * Plugin Cordis per DeepSeek Harness (DSH)
- * Ispezione di sicurezza pacchetti NPM, rilevamento typosquatting e script dannosi.
+ * Cordis Plugin for DeepSeek Harness (DSH)
+ * NPM package security auditor, typosquatting detector, and supply-chain heuristic scanner.
  */
 
 import { promises as fs } from 'fs';
@@ -55,16 +55,22 @@ export function analyzeScriptSecurity(scriptContent) {
   const patterns = [
     { regex: /curl\s+.*\|\s*(?:bash|sh)/i, level: 'CRITICAL', desc: 'Remote pipe-to-shell execution (curl | bash)' },
     { regex: /wget\s+.*\|\s*(?:bash|sh)/i, level: 'CRITICAL', desc: 'Remote pipe-to-shell execution (wget | bash)' },
-    { regex: /base64\s+-d/i, level: 'HIGH', desc: 'Obfuscated base64 payload decoding' },
+    { regex: /base64\s+-d/i, level: 'HIGH', desc: 'Obfuscated base64 shell decoding (base64 -d)' },
+    { regex: /Buffer\.from\s*\([^)]*['"]base64['"]\)/i, level: 'HIGH', desc: 'Node.js Base64 payload decoding (Buffer.from)' },
+    { regex: /\batob\s*\(/i, level: 'HIGH', desc: 'In-memory base64 decoding (atob)' },
     { regex: /(?:nc|netcat|ncat)\s+-e/i, level: 'CRITICAL', desc: 'Netcat reverse shell with -e flag' },
     { regex: /\/dev\/tcp\/[0-9.]+\/[0-9]+/i, level: 'CRITICAL', desc: 'Native bash TCP reverse shell' },
+    { regex: /child_process\.(?:exec|spawn|fork|execSync|spawnSync)\s*\(/i, level: 'HIGH', desc: 'Child process execution in lifecycle script' },
+    { regex: /(?:fs\.readFile|fs\.readFileSync)\s*\([^)]*(?:id_rsa|\.ssh|\.aws|\.env)/i, level: 'CRITICAL', desc: 'Attempted exfiltration of SSH, AWS or .env secrets' },
+    { regex: /https?:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i, level: 'MEDIUM', desc: 'Direct network request to numeric raw IP address' },
+    { regex: /\b(?:python|python3|perl|ruby)\s+-c\s+/i, level: 'HIGH', desc: 'Inline scripting interpreter execution' },
     { regex: /eval\s*\(/i, level: 'HIGH', desc: 'Unsafe dynamic eval() execution' },
-    { regex: /process\.env\.[A-Z0-9_]*KEY/i, level: 'MEDIUM', desc: 'Access to secret keys in environment variables' }
+    { regex: /process\.env\.[A-Z0-9_]*(?:KEY|TOKEN|SECRET|PASSWORD)/i, level: 'MEDIUM', desc: 'Access to secret credentials in environment variables' }
   ];
 
   for (const p of patterns) {
     if (p.regex.test(scriptContent)) {
-      findings.push({ severity: p.level, description: p.desc, match: scriptContent.slice(0, 100) });
+      findings.push({ severity: p.level, description: p.desc, match: scriptContent.slice(0, 120) });
     }
   }
   return findings;
