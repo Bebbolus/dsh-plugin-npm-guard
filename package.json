@@ -1,0 +1,35 @@
+{
+  "name": "dsh-plugin-npm-guard",
+  "version": "1.0.0",
+  "description": "NPM Security Guard & Typosquatting/AST inspection for DeepSeek Harness (DSH)",
+  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "cordis",
+    "security",
+    "npm",
+    "typosquatting",
+    "supply-chain-security",
+    "deepseek-harness"
+  ],
+  "author": "Bebbolus",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bebbolus/dsh-plugin-npm-guard.git"
+  },
+  "homepage": "https://github.com/Bebbolus/dsh-plugin-npm-guard#readme",
+  "bugs": {
+    "url": "https://github.com/Bebbolus/dsh-plugin-npm-guard/issues"
+  },
+  "license": "MIT"
+}
