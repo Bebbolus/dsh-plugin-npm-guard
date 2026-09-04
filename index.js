@@ -43,7 +43,7 @@ export function checkTyposquatting(pkgName) {
         suspicious: cleanName,
         target_popular: popular,
         distance: dist,
-        warning: `ATTENZIONE: Il pacchetto '${pkgName}' è quasi identico al popolare pacchetto '${popular}'. Possibile attacco di Typosquatting!`
+        warning: `WARNING: The package '${pkgName}' is nearly identical to the popular package '${popular}'. Possible Typosquatting attack!`
       };
     }
   }
@@ -53,13 +53,13 @@ export function checkTyposquatting(pkgName) {
 export function analyzeScriptSecurity(scriptContent) {
   const findings = [];
   const patterns = [
-    { regex: /curl\s+.*\|\s*(?:bash|sh)/i, level: 'CRITICAL', desc: 'Esecuzione remota pipe-to-shell (curl | bash)' },
-    { regex: /wget\s+.*\|\s*(?:bash|sh)/i, level: 'CRITICAL', desc: 'Esecuzione remota pipe-to-shell (wget | bash)' },
-    { regex: /base64\s+-d/i, level: 'HIGH', desc: 'Decodifica payload base64 offuscato' },
-    { regex: /(?:nc|netcat|ncat)\s+-e/i, level: 'CRITICAL', desc: 'Reverse shell netcat con flag -e' },
-    { regex: /\/dev\/tcp\/[0-9.]+\/[0-9]+/i, level: 'CRITICAL', desc: 'Reverse shell TCP nativa bash' },
-    { regex: /eval\s*\(/i, level: 'HIGH', desc: 'Uso di eval() dinamico non sicuro' },
-    { regex: /process\.env\.[A-Z0-9_]*KEY/i, level: 'MEDIUM', desc: 'Accesso a chiavi segrete nelle variabili d\'ambiente' }
+    { regex: /curl\s+.*\|\s*(?:bash|sh)/i, level: 'CRITICAL', desc: 'Remote pipe-to-shell execution (curl | bash)' },
+    { regex: /wget\s+.*\|\s*(?:bash|sh)/i, level: 'CRITICAL', desc: 'Remote pipe-to-shell execution (wget | bash)' },
+    { regex: /base64\s+-d/i, level: 'HIGH', desc: 'Obfuscated base64 payload decoding' },
+    { regex: /(?:nc|netcat|ncat)\s+-e/i, level: 'CRITICAL', desc: 'Netcat reverse shell with -e flag' },
+    { regex: /\/dev\/tcp\/[0-9.]+\/[0-9]+/i, level: 'CRITICAL', desc: 'Native bash TCP reverse shell' },
+    { regex: /eval\s*\(/i, level: 'HIGH', desc: 'Unsafe dynamic eval() execution' },
+    { regex: /process\.env\.[A-Z0-9_]*KEY/i, level: 'MEDIUM', desc: 'Access to secret keys in environment variables' }
   ];
 
   for (const p of patterns) {
@@ -118,7 +118,7 @@ export function apply(ctx) {
               }
             }
           } catch (err) {
-            results.error = `Impossibile leggere il file package.json: ${err.message}`;
+            results.error = `Failed to read package.json file: ${err.message}`;
           }
         }
 

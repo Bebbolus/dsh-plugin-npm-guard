@@ -58,7 +58,7 @@ When autonomous AI agents write and execute code, installing npm dependencies wi
       "suspicious": "exxpress",
       "target_popular": "express",
       "distance": 1,
-      "warning": "ATTENZIONE: Il pacchetto 'exxpress' è quasi identico al popolare pacchetto 'express'. Possibile attacco di Typosquatting!"
+      "warning": "WARNING: The package 'exxpress' is nearly identical to the popular package 'express'. Possible Typosquatting attack!"
     }
   ],
   "script_risks": [
@@ -68,7 +68,7 @@ When autonomous AI agents write and execute code, installing npm dependencies wi
       "findings": [
         {
           "severity": "CRITICAL",
-          "description": "Esecuzione remota pipe-to-shell (curl | bash)"
+          "description": "Remote pipe-to-shell execution (curl | bash)"
         }
       ]
     }
