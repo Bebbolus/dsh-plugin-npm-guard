@@ -97,7 +97,7 @@ export function apply(ctx) {
             script_risks: { type: 'array' }
           }
         },
-        render: (value) => JSON.stringify(value, null, 2)
+        render: (_args, value) => [{ type: 'text', text: typeof value === 'string' ? value : JSON.stringify(value, null, 2) }]
       },
       execute: async (args) => {
         const results = { safe: true, typosquatting: [], script_risks: [] };
